@@ -85,20 +85,47 @@ SortMind AI unifies everything in one lightweight native workflow:
 
 ## 🧱 System Architecture
 
-```
-Frontend (HTML/JS/CSS)
-   |
-   |   Wails Bindings (Direct Go Function Calls)
-   v
-Go Backend Application
-   |
-   |-- Config Loader (reads/writes config.json)
-   |-- OS File Operations (Rename, ReadFile, MkdirAll)
-   |-- Dialogs (runtime.OpenDirectoryDialog)
-   |
-   +----> Gemini API (HTTPS POST)
-   +----> OpenAI API (HTTPS POST)
-   +----> Local Ollama (HTTP POST on Port 11434)
+```yaml
+system_architecture:
+  components:
+    frontend:
+      technology: "HTML5, CSS3, ES6 JavaScript"
+      role: "User interface, settings configuration panel, file previews, logs, run loop controls"
+      bindings:
+        type: "Wails JS Bridge"
+        target: "Go Backend Controllers"
+
+    backend:
+      technology: "Go (Golang)"
+      role: "File scanning, OS directories, config loading/saving, HTTP API connectors, file moves"
+      apis:
+        - name: "Google Gemini API"
+          protocol: "HTTPS (Google GenAI API)"
+        - name: "OpenAI API"
+          protocol: "HTTPS (REST)"
+        - name: "Local Ollama"
+          protocol: "HTTP (Port 11434)"
+
+  data_flows:
+    scanning_flow:
+      - step: 1
+        action: "User clicks Browse to choose a directory"
+      - step: 2
+        action: "Go opens native OS directory browser and returns folder path"
+      - step: 3
+        action: "Go scans folder, extracts file snippets, returns FileInfo array to frontend"
+
+    sorting_flow:
+      - step: 1
+        action: "User starts run (AI Preview or Organize execution)"
+      - step: 2
+        action: "JS executes loop, checking Pause/Cancel flags before processing each file"
+      - step: 3
+        action: "Go requests classification category from selected LLM API"
+      - step: 4
+        action: "If Organize mode: Go checks filename collision in target, renames duplicate, moves file"
+      - step: 5
+        action: "Go returns status result to JS to update row UI and print terminal console log"
 ```
 
 ---
