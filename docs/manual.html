@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SortMind AI — User Manual</title>
+    <meta name="description" content="Step-by-step user manual describing scanning, dry run, folder organization, pause/cancel, and collision policy.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <!-- ─── HEADER ─── -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>SortMind AI</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Docs</a>
+                <a href="download.html">Installation</a>
+                <a href="manual.html" class="active">User Manual</a>
+                <a href="https://github.com/PAVAN2005-LAB/-SortMind-AI.git" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── LAYOUT ─── -->
+    <div class="doc-layout">
+        <!-- Sidebar -->
+        <aside class="doc-sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="nav-group-title">Getting Started</span>
+                    <a href="index.html" class="nav-link">Introduction</a>
+                    <a href="download.html" class="nav-link">Download & Install</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-title">Configuration</span>
+                    <a href="config.html" class="nav-link">AI Engines</a>
+                    <a href="config.html#config-categories" class="nav-link">Custom Folders</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-title">User Manual</span>
+                    <a href="manual.html" class="nav-link active">Scanning Directory</a>
+                    <a href="manual.html#manual-modes" class="nav-link">Dry Run vs Organize</a>
+                    <a href="manual.html#manual-collisions" class="nav-link">Collision Policy</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="doc-content">
+            <section class="doc-section" id="manual-scanning">
+                <h1>User Manual & Operations</h1>
+                <p class="lead">
+                    This manual outlines the operational steps to organize your local folders using SortMind AI.
+                </p>
+
+                <h3>Scanning a Directory</h3>
+                <p>
+                    1. Launch the SortMind AI application on your desktop.<br>
+                    2. Click the <strong>📁 Browse</strong> button next to the "Target Folder" input. This initiates your operating system's native folder browser dialog.<br>
+                    3. Select the cluttered folder and click "Select Folder".<br>
+                    4. Click the <strong>Scan Directory</strong> button.
+                </p>
+                <p>
+                    The application scans all files immediately inside that folder and renders them inside the files table. Nested subdirectories are bypassed for safety.
+                </p>
+            </section>
+
+            <section class="doc-section" id="manual-modes">
+                <h2>Dry Run vs Organize Execution</h2>
+                <p>
+                    Choose the specific files you want to organize by checking the boxes in the leftmost column. Select one of the processing actions:
+                </p>
+                <ul>
+                    <li>
+                        <strong>AI Preview (Dry Run):</strong>
+                        Extracts content snippets, sends them to the configured AI engine, and returns predictions in the "Category" column. No files are moved on your disk. Use this mode to evaluate categorizations before execution.
+                    </li>
+                    <li>
+                        <strong>Organize Files:</strong>
+                        Classifies selected files, automatically creates target category directories within the scanned folder, and moves the files.
+                    </li>
+                </ul>
+
+                <h3>Run-Time Controls (Pause & Cancel)</h3>
+                <p>
+                    During folder organization, SortMind AI processes your files sequentially. You can control the active run with the following control buttons:
+                </p>
+                <ul>
+                    <li><strong>Pause:</strong> Temporarily halts the sequence. The active file finishes processing, and the queue waits. The button will toggle to "Resume". Click "Resume" to continue.</li>
+                    <li><strong>Cancel:</strong> Immediately terminates the remaining queue after the current active file finishes processing. Control binds are safely restored.</li>
+                </ul>
+            </section>
+
+            <section class="doc-section" id="manual-collisions">
+                <h2>Filename Collision Policy</h2>
+                <p>
+                    If a file being moved has the exact same name as a file already present in the target category folder, SortMind AI prevents overwriting.
+                </p>
+                <p>
+                    It automatically appends an incremental numeric suffix to the filename before completing the move (e.g., if <code>invoice.pdf</code> already exists inside the <code>Invoices</code> folder, the incoming file will be renamed and moved as <code>invoice_1.pdf</code>).
+                </p>
+            </section>
+        </main>
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>SortMind AI Documentation · Created by Pavan Kumar Yadav & Team · 2026</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,9 @@
+Title: Deep Learning for Computer Vision in Autonomous Driving
+Abstract:
+This paper presents a comprehensive review of deep convolutional neural networks (CNNs)
+and transformer architectures applied to real-time object detection and semantic segmentation.
+We evaluate performance across various datasets such as COCO and Cityscapes, and discuss 
+the trade-offs between accuracy and latency in edge computing devices. Furthermore, we 
+introduce a novel spatial attention mechanism that improves lane detection by 14% while 
+maintaining a inference rate of 60 frames per second on standard embedded hardware.
+Keywords: Deep Learning, Computer Vision, Autonomous Vehicles, Transformers.

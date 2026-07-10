@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SortMind AI — AI & Category Configuration</title>
+    <meta name="description" content="Detailed guide to configure AI engines (Gemini, OpenAI, Ollama) and target category folders in SortMind AI.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <!-- ─── HEADER ─── -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>SortMind AI</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Docs</a>
+                <a href="download.html">Installation</a>
+                <a href="manual.html">User Manual</a>
+                <a href="https://github.com/PAVAN2005-LAB/-SortMind-AI.git" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── LAYOUT ─── -->
+    <div class="doc-layout">
+        <!-- Sidebar -->
+        <aside class="doc-sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="nav-group-title">Getting Started</span>
+                    <a href="index.html" class="nav-link">Introduction</a>
+                    <a href="download.html" class="nav-link">Download & Install</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-title">Configuration</span>
+                    <a href="config.html" class="nav-link active">AI Engines</a>
+                    <a href="config.html#config-categories" class="nav-link">Custom Folders</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-title">User Manual</span>
+                    <a href="manual.html" class="nav-link">Scanning Directory</a>
+                    <a href="manual.html#manual-modes" class="nav-link">Dry Run vs Organize</a>
+                    <a href="manual.html#manual-collisions" class="nav-link">Collision Policy</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="doc-content">
+            <section class="doc-section" id="config-providers">
+                <h1>AI Engine Setup</h1>
+                <p class="lead">
+                    Before classifying files, you need to configure your chosen AI provider in the application settings panel.
+                </p>
+
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th>Provider</th>
+                            <th>Supported Models</th>
+                            <th>Credentials</th>
+                            <th>Offline Capable</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Google Gemini</strong></td>
+                            <td>Gemini 2.5 Flash, Gemini 2.5 Pro</td>
+                            <td>Requires API Key from Google AI Studio.</td>
+                            <td>No (Cloud API)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OpenAI</strong></td>
+                            <td>GPT-4o Mini, GPT-4o</td>
+                            <td>Requires API Key from OpenAI Developer Platform.</td>
+                            <td>No (Cloud API)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ollama</strong></td>
+                            <td>Llama 3, Mistral, custom local models</td>
+                            <td>None (connects to local port 11434 automatically).</td>
+                            <td>Yes (100% Offline)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Google Gemini Configuration</h3>
+                <p>
+                    Gemini 2.5 Flash is recommended due to its high classification speed and free tier options. Visit the <a href="https://aistudio.google.com/" target="_blank">Google AI Studio API Key portal</a>, copy your key, select "Google Gemini" in the dropdown, paste the key, and click "Save Settings".
+                </p>
+
+                <h3>Ollama Offline Setup</h3>
+                <p>
+                    For offline security and private sorting, install Ollama from <a href="https://ollama.com/" target="_blank">ollama.com</a>. Open your command terminal and download a compatible text classification model:
+                </p>
+                <div class="code-block">
+                    <code>ollama pull llama3</code>
+                </div>
+                <p>
+                    In the SortMind AI dropdown, choose "Ollama", select "Llama 3" in the model dropdown, and click "Save Settings". No API key is required.
+                </p>
+            </section>
+
+            <section class="doc-section" id="config-categories">
+                <h2>Custom Folder Categories</h2>
+                <p>
+                    The category chips listed in the sidebar represent the target directories files will be sorted into. You can custom tailor this list:
+                </p>
+                <ul>
+                    <li><strong>Add Category:</strong> Enter the name of the new target folder in the "New folder name" input field and click the "+" button. The name will appear as a category chip.</li>
+                    <li><strong>Delete Category:</strong> Click the "x" button next to any category chip to remove it.</li>
+                    <li><strong>Save Settings:</strong> Click the <strong>Save Settings</strong> button to write these custom categories to the configuration file.</li>
+                </ul>
+                <div class="info-box">
+                    <strong>Default Categories:</strong> If no custom categories are specified, SortMind AI defaults to: <code>Invoices</code>, <code>Receipts</code>, <code>Readings</code>, <code>Code</code>, <code>Images</code>, and <code>Others</code>.
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>SortMind AI Documentation · Created by Pavan Kumar Yadav & Team · 2026</p>
+        </div>
+    </footer>
+</body>
+</html>

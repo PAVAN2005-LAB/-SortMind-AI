@@ -1,0 +1,17 @@
+INVOICE - AWS Cloud Services
+Invoice #: INV-2026-9921
+Billing Period: June 2026
+Date of Issue: July 1, 2026
+Due Date: July 31, 2026
+
+Bill To:
+Pavan
+123 Tech Street, Dev City
+
+Itemized Charges:
+1. EC2 Instance - t3.medium (720 hrs)   $36.00
+2. S3 Storage - Standard 500GB          $11.50
+3. RDS Postgres Database                $95.00
+
+Total Amount Due:                       $142.50
+Please pay via bank transfer to account ending in 9876.

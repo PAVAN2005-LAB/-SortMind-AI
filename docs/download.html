@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SortMind AI — Download & Installation</title>
+    <meta name="description" content="Download compiled production binaries for Windows and Linux and follow step-by-step setup guides.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <!-- ─── HEADER ─── -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>SortMind AI</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Docs</a>
+                <a href="download.html" class="active">Installation</a>
+                <a href="manual.html">User Manual</a>
+                <a href="https://github.com/PAVAN2005-LAB/-SortMind-AI.git" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── LAYOUT ─── -->
+    <div class="doc-layout">
+        <!-- Sidebar -->
+        <aside class="doc-sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="nav-group-title">Getting Started</span>
+                    <a href="index.html" class="nav-link">Introduction</a>
+                    <a href="download.html" class="nav-link active">Download & Install</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-title">Configuration</span>
+                    <a href="config.html" class="nav-link">AI Engines</a>
+                    <a href="config.html#config-categories" class="nav-link">Custom Folders</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-title">User Manual</span>
+                    <a href="manual.html" class="nav-link">Scanning Directory</a>
+                    <a href="manual.html#manual-modes" class="nav-link">Dry Run vs Organize</a>
+                    <a href="manual.html#manual-collisions" class="nav-link">Collision Policy</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="doc-content">
+            <section class="doc-section" id="download">
+                <h1>Download Compiled Binary</h1>
+                <p class="lead">
+                    Select the compiled ZIP archive containing the production desktop application for your platform. No separate developer dependencies or source codes are included.
+                </p>
+                
+                <div class="download-grid">
+                    <a href="#" class="download-card">
+                        <div class="dl-title">Windows x64 Build (.ZIP)</div>
+                        <div class="dl-meta">SortMindAI_Windows_x64.zip (10.4 MB)</div>
+                        <div class="dl-action">Download Windows ZIP</div>
+                    </a>
+                    <a href="#" class="download-card">
+                        <div class="dl-title">Linux x64 Build (.TAR.GZ)</div>
+                        <div class="dl-meta">SortMindAI_Linux_x64.tar.gz (9.2 MB)</div>
+                        <div class="dl-action">Download Linux Package</div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="doc-section" id="install-windows">
+                <h2>Windows Installation</h2>
+                <p>
+                    Follow these instructions to run the application on Microsoft Windows systems.
+                </p>
+                
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-text">
+                            <strong>Extract ZIP:</strong>
+                            <p>Right-click the downloaded <code>SortMindAI_Windows_x64.zip</code> file and extract its contents to an directory (e.g., Desktop or Program Files).</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-text">
+                            <strong>Run Installer:</strong>
+                            <p>Open the extracted folder and double-click <code>SortMindAI_Setup.exe</code> to start the setup wizard.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-text">
+                            <strong>Accept License:</strong>
+                            <p>Read the presented Terms and Conditions. Click the acceptance check box to agree and enable the installation progression.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-text">
+                            <strong>Finish Installation:</strong>
+                            <p>Select whether to generate a desktop shortcut, click Install, and launch the native application window.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <strong>System Prerequisite:</strong> The application relies on the Microsoft Edge WebView2 Runtime to display its user interface. WebView2 is pre-installed on Windows 10 and 11 by default. No manual runtime installations are needed.
+                </div>
+            </section>
+
+            <section class="doc-section" id="install-linux">
+                <h2>Linux Installation</h2>
+                <p>
+                    Follow these instructions to run the application on Linux distributions (Ubuntu, Debian, etc.).
+                </p>
+                
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-text">
+                            <strong>Install WebKit2Gtk Dependency:</strong>
+                            <p>Linux requires the <code>WebKit2Gtk</code> library to render the application window. Install it using the package manager in your terminal:</p>
+                            <div class="code-block">
+                                <code>sudo apt update && sudo apt install libwebkit2gtk-4.0-dev -y</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-text">
+                            <strong>Extract and Run Binary:</strong>
+                            <p>Extract the tar package, navigate to the directory, mark the binary executable, and run it:</p>
+                            <div class="code-block">
+                                <code>tar -xzf SortMindAI_Linux_x64.tar.gz<br>chmod +x SortMindAI<br>./SortMindAI</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>SortMind AI Documentation · Created by Pavan Kumar Yadav & Team · 2026</p>
+        </div>
+    </footer>
+</body>
+</html>

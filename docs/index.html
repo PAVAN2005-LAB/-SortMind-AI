@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SortMind AI — Documentation Home</title>
+    <meta name="description" content="Official documentation for SortMind AI. Explore introduction, core features, and project contributors.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <!-- ─── HEADER ─── -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>SortMind AI</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="active">Docs</a>
+                <a href="download.html">Installation</a>
+                <a href="manual.html">User Manual</a>
+                <a href="https://github.com/PAVAN2005-LAB/-SortMind-AI.git" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── LAYOUT ─── -->
+    <div class="doc-layout">
+        <!-- Sidebar -->
+        <aside class="doc-sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="nav-group-title">Getting Started</span>
+                    <a href="index.html" class="nav-link active">Introduction</a>
+                    <a href="download.html" class="nav-link">Download & Install</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-title">Configuration</span>
+                    <a href="config.html" class="nav-link">AI Engines</a>
+                    <a href="config.html#config-categories" class="nav-link">Custom Folders</a>
+                </div>
+                <div class="nav-group">
+                    <span class="nav-group-title">User Manual</span>
+                    <a href="manual.html" class="nav-link">Scanning Directory</a>
+                    <a href="manual.html#manual-modes" class="nav-link">Dry Run vs Organize</a>
+                    <a href="manual.html#manual-collisions" class="nav-link">Collision Policy</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="doc-content">
+            <section class="doc-section">
+                <h1>SortMind AI</h1>
+                <p class="lead">
+                    SortMind AI is a fast, native desktop application that automates folder organization. Instead of sorting files simply by extension, SortMind AI reads file content snippets or metadata, asks a local or free AI API what the file actually represents, and automatically moves it into context-aware subfolders.
+                </p>
+                <div class="info-box">
+                    <strong>Note:</strong> SortMind AI runs entirely locally. It does not run background server processes or store your personal documents. All API keys and preferences are stored securely in a local configuration file on your machine.
+                </div>
+            </section>
+
+            <section class="doc-section">
+                <h2>Key Principles</h2>
+                <ul>
+                    <li><strong>Content-Aware Classification:</strong> Uses advanced LLM processing to analyze snippets and match file topics dynamically rather than checking extensions.</li>
+                    <li><strong>Offline-First Capabilities:</strong> Integrates with local Ollama runtimes so you can organize folders privately without sending details to cloud APIs.</li>
+                    <li><strong>Responsive Local Framework:</strong> Developed using the Go + Wails v2 desktop stack to compile into a single fast binary (no bulky browser wrappers).</li>
+                </ul>
+            </section>
+
+            <section class="doc-section">
+                <h2>Project Creators & Contributors</h2>
+                <p>
+                    SortMind AI is developed and maintained by the following team members:
+                </p>
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Responsibility</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Pavan Kumar Yadav</strong></td>
+                            <td>Lead Developer</td>
+                            <td>Core Architecture, Go Backend, Wails Integrations</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Baraiya Pradip</strong></td>
+                            <td>Contributor</td>
+                            <td>Frontend UI/UX Implementation, Client Layout Controllers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vegad Vishal Himmatbhai</strong></td>
+                            <td>Contributor</td>
+                            <td>API Connector Modules, File Reader Snippet Helpers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Shruti Panda</strong></td>
+                            <td>Contributor</td>
+                            <td>Multimodal Testing, Content Classification QA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sheetal Singh</strong></td>
+                            <td>Contributor</td>
+                            <td>Cross-Platform Builds, Script Launchers, Installer Scripting</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>SortMind AI Documentation · Created by Pavan Kumar Yadav & Team · 2026</p>
+        </div>
+    </footer>
+</body>
+</html>

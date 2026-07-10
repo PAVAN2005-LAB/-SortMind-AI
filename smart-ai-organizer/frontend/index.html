@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SortMind AI</title>
+    <meta name="description" content="AI-powered desktop file organizer that categorizes your cluttered folders using Gemini, OpenAI, or Ollama.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- ─── HEADER ─── -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#4facfe"/><stop offset="100%" style="stop-color:#00f2fe"/></linearGradient></defs>
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>SortMind AI</h1>
+                    <p>Context-Aware Desktop Automation</p>
+                </div>
+            </div>
+            <div class="connection-badge" id="connectionBadge">
+                <span class="dot yellow"></span>
+                <span id="connectionLabel">Not Configured</span>
+            </div>
+        </header>
+
+        <!-- ─── BODY GRID ─── -->
+        <div class="app-body">
+
+            <!-- ─── SIDEBAR ─── -->
+            <aside class="sidebar glass-card">
+
+                <!-- AI Settings -->
+                <section class="sidebar-block">
+                    <h2 class="block-title">⚙️ AI Engine</h2>
+
+                    <label class="field-label" for="selProvider">Provider</label>
+                    <select id="selProvider">
+                        <option value="gemini">Google Gemini</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="ollama">Ollama (Local / Offline)</option>
+                    </select>
+
+                    <label class="field-label" for="selModel">Model</label>
+                    <select id="selModel"></select>
+
+                    <div id="apiKeyBlock">
+                        <label class="field-label" for="inpApiKey">API Key</label>
+                        <div class="key-row">
+                            <input type="password" id="inpApiKey" placeholder="Paste your key here…">
+                            <button type="button" id="btnToggleKey" class="icon-btn" title="Show / Hide key">👁️</button>
+                        </div>
+                    </div>
+
+                    <div class="btn-pair">
+                        <button id="btnTest" class="btn secondary">Test Connection</button>
+                        <button id="btnSave" class="btn primary">Save Settings</button>
+                    </div>
+                </section>
+
+                <!-- Category Folders -->
+                <section class="sidebar-block border-top">
+                    <h2 class="block-title">📁 Categories</h2>
+                    <p class="hint">Files will be sorted into these folders:</p>
+                    <div id="categoryChips" class="chip-area"></div>
+                    <div class="add-row">
+                        <input type="text" id="inpNewCat" placeholder="New folder name…">
+                        <button id="btnAddCat" class="btn square">+</button>
+                    </div>
+                </section>
+            </aside>
+
+            <!-- ─── MAIN PANEL ─── -->
+            <main class="main-panel">
+
+                <!-- Folder Input -->
+                <section class="glass-card folder-bar">
+                    <div class="folder-input-group">
+                        <label class="field-label" for="inpFolder">Target Folder</label>
+                        <input type="text" id="inpFolder" placeholder="Select a folder or enter path…">
+                    </div>
+                    <button id="btnBrowse" class="btn outline">📁 Browse</button>
+                    <button id="btnDemo" class="btn outline">Load Demo</button>
+                    <button id="btnScan" class="btn glow">Scan Directory</button>
+                </section>
+
+                <!-- Files Table -->
+                <section class="glass-card files-panel" id="filesPanel" style="display:none">
+                    <div class="panel-head">
+                        <h2>Scanned Files (<span id="spanCount">0</span>)</h2>
+                        <div class="head-actions">
+                            <button class="link-btn" id="btnSelAll">Select All</button>
+                            <button class="link-btn" id="btnSelNone">Deselect All</button>
+                        </div>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table class="ftable">
+                            <thead>
+                                <tr>
+                                    <th class="col-chk"><input type="checkbox" id="chkHead" checked></th>
+                                    <th>File</th>
+                                    <th>Content Preview</th>
+                                    <th class="col-size">Size</th>
+                                    <th class="col-cat">Category</th>
+                                    <th class="col-status">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="actions-bar">
+                        <span class="sel-info">Selected: <strong id="spanSel">0</strong></span>
+                        <div class="action-btns">
+                            <button id="btnDry" class="btn secondary large">AI Preview (Dry Run)</button>
+                            <button id="btnExec" class="btn primary large glow-primary">Organize Files</button>
+                            <button id="btnPause" class="btn secondary large" style="display:none">Pause</button>
+                            <button id="btnCancel" class="btn red large" style="display:none">Cancel</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Log Terminal -->
+                <section class="glass-card log-card" id="logCard" style="display:none">
+                    <div class="panel-head">
+                        <h2>Activity Log</h2>
+                        <button class="link-btn" id="btnClearLog">Clear</button>
+                    </div>
+                    <div class="terminal" id="terminal">
+                        <div class="tline sys">[system] Ready. Configure AI engine and scan a folder to begin.</div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="./src/main.js" type="module"></script>
+</body>
+</html>
