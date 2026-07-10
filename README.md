@@ -85,47 +85,50 @@ SortMind AI unifies everything in one lightweight native workflow:
 
 ## 🧱 System Architecture
 
-```yaml
-system_architecture:
-  components:
-    frontend:
-      technology: "HTML5, CSS3, ES6 JavaScript"
-      role: "User interface, settings configuration panel, file previews, logs, run loop controls"
-      bindings:
-        type: "Wails JS Bridge"
-        target: "Go Backend Controllers"
+```mermaid
+graph TD
+    classDef default fill:#ffffff,stroke:#e5e7eb,stroke-width:1px,color:#111827;
+    classDef highlight fill:#f0f9ff,stroke:#bae6fd,stroke-width:1.5px,color:#0369a1;
 
-    backend:
-      technology: "Go (Golang)"
-      role: "File scanning, OS directories, config loading/saving, HTTP API connectors, file moves"
-      apis:
-        - name: "Google Gemini API"
-          protocol: "HTTPS (Google GenAI API)"
-        - name: "OpenAI API"
-          protocol: "HTTPS (REST)"
-        - name: "Local Ollama"
-          protocol: "HTTP (Port 11434)"
+    subgraph Frontend [JS / HTML / CSS Client]
+        UI[User Interface & Dashboard]
+        Logs[Terminal Logger]
+        Ctrl[Pause / Cancel Controls]
+    end
+    
+    subgraph Bindings [Wails JS Bridge]
+        Bridge[Direct Go Call Bindings]
+    end
 
-  data_flows:
-    scanning_flow:
-      - step: 1
-        action: "User clicks Browse to choose a directory"
-      - step: 2
-        action: "Go opens native OS directory browser and returns folder path"
-      - step: 3
-        action: "Go scans folder, extracts file snippets, returns FileInfo array to frontend"
+    subgraph Backend [Go Desktop Engine]
+        Scan[Directory Scanner]
+        Move[File Movements & Renamer]
+        Config[config.json Reader/Writer]
+    end
 
-    sorting_flow:
-      - step: 1
-        action: "User starts run (AI Preview or Organize execution)"
-      - step: 2
-        action: "JS executes loop, checking Pause/Cancel flags before processing each file"
-      - step: 3
-        action: "Go requests classification category from selected LLM API"
-      - step: 4
-        action: "If Organize mode: Go checks filename collision in target, renames duplicate, moves file"
-      - step: 5
-        action: "Go returns status result to JS to update row UI and print terminal console log"
+    subgraph APIs [AI Models]
+        Gemini[Google Gemini API]
+        OpenAI[OpenAI API]
+        Ollama[Local Ollama Port 11434]
+    end
+
+    UI --> Bridge
+    Logs --> Bridge
+    Ctrl --> Bridge
+    
+    Bridge --> Scan
+    Bridge --> Move
+    Bridge --> Config
+
+    Scan --> Gemini
+    Scan --> OpenAI
+    Scan --> Ollama
+
+    Move --> Gemini
+    Move --> OpenAI
+    Move --> Ollama
+
+    class UI,Logs,Ctrl,Scan,Move,Config highlight;
 ```
 
 ---
