@@ -23,6 +23,16 @@ const MODELS = {
     openai: [
         { value: "gpt-4o-mini", label: "GPT-4o Mini (Fast & Cheap)" },
         { value: "gpt-4o",      label: "GPT-4o" },
+        { value: "gpt-5-preview", label: "GPT-5 (Preview)" },
+    ],
+    anthropic: [
+        { value: "claude-3-5-sonnet-20241022", label: "Claude 3.5 Sonnet" },
+        { value: "claude-3-5-haiku-20241022",  label: "Claude 3.5 Haiku" },
+        { value: "claude-3-opus-20240229",    label: "Claude 3 Opus" },
+    ],
+    deepseek: [
+        { value: "deepseek-chat",  label: "DeepSeek Chat" },
+        { value: "deepseek-coder", label: "DeepSeek Coder" },
     ],
     ollama: [
         { value: "llama3",  label: "Llama 3" },
@@ -30,10 +40,11 @@ const MODELS = {
         { value: "phi3",    label: "Phi 3" },
         { value: "gemma2",  label: "Gemma 2" },
     ],
+    custom: []
 };
 
 // ── State ──
-let config = { provider: "gemini", model: "gemini-2.5-flash", api_key: "", categories: [] };
+let config = { provider: "gemini", model: "gemini-2.5-flash", api_key: "", categories: [], custom_base_url: "" };
 let files  = [];
 let isPaused = false;
 let isCancelled = false;
@@ -41,19 +52,24 @@ let isCancelled = false;
 // ── DOM refs ──
 const $ = id => document.getElementById(id);
 
-const selProvider   = $("selProvider");
-const selModel      = $("selModel");
-const inpApiKey     = $("inpApiKey");
-const btnToggleKey  = $("btnToggleKey");
-const apiKeyBlock   = $("apiKeyBlock");
-const btnTest       = $("btnTest");
-const btnSave       = $("btnSave");
-const categoryChips = $("categoryChips");
-const inpNewCat     = $("inpNewCat");
-const btnAddCat     = $("btnAddCat");
-const connBadge     = $("connectionBadge");
-const connLabel     = $("connectionLabel");
-const connDot       = connBadge.querySelector(".dot");
+const selProvider      = $("selProvider");
+const selModel         = $("selModel");
+const inpApiKey        = $("inpApiKey");
+const btnToggleKey     = $("btnToggleKey");
+const apiKeyBlock      = $("apiKeyBlock");
+const btnTest          = $("btnTest");
+const btnSave          = $("btnSave");
+const categoryChips    = $("categoryChips");
+const inpNewCat        = $("inpNewCat");
+const btnAddCat        = $("btnAddCat");
+const connBadge        = $("connectionBadge");
+const connLabel        = $("connectionLabel");
+const connDot          = connBadge.querySelector(".dot");
+const modelSelectBlock = $("modelSelectBlock");
+const customModelBlock = $("customModelBlock");
+const customUrlBlock   = $("customUrlBlock");
+const inpCustomModel   = $("inpCustomModel");
+const inpCustomUrl     = $("inpCustomUrl");
 
 const inpFolder     = $("inpFolder");
 const btnBrowse     = $("btnBrowse");
@@ -85,8 +101,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function wireEvents() {
     selProvider.addEventListener("change", () => {
-        fillModels(selProvider.value);
-        apiKeyBlock.style.display = selProvider.value === "ollama" ? "none" : "block";
+        const prov = selProvider.value;
+        fillModels(prov);
+        
+        // Hide API key block only for Ollama; others (including custom) might require keys
+        apiKeyBlock.style.display = prov === "ollama" ? "none" : "block";
+
+        if (prov === "custom") {
+            modelSelectBlock.style.display = "none";
+            customModelBlock.style.display = "block";
+            customUrlBlock.style.display = "block";
+        } else if (prov === "deepseek") {
+            modelSelectBlock.style.display = "block";
+            customModelBlock.style.display = "none";
+            customUrlBlock.style.display = "block"; // Allow custom API Base URL for DeepSeek users
+        } else {
+            modelSelectBlock.style.display = "block";
+            customModelBlock.style.display = "none";
+            customUrlBlock.style.display = "none";
+        }
     });
     btnToggleKey.addEventListener("click", () => {
         const show = inpApiKey.type === "password";
@@ -144,18 +177,49 @@ async function loadSettings() {
         log("Failed to load settings: " + e, "err");
     }
 
-    selProvider.value = config.provider || "gemini";
-    fillModels(config.provider || "gemini", config.model);
+    const prov = config.provider || "gemini";
+    selProvider.value = prov;
+    fillModels(prov, config.model);
     inpApiKey.value = config.api_key || "";
-    apiKeyBlock.style.display = config.provider === "ollama" ? "none" : "block";
+    
+    apiKeyBlock.style.display = prov === "ollama" ? "none" : "block";
+
+    if (prov === "custom") {
+        modelSelectBlock.style.display = "none";
+        customModelBlock.style.display = "block";
+        customUrlBlock.style.display = "block";
+        inpCustomModel.value = config.model || "";
+        inpCustomUrl.value = config.custom_base_url || "";
+    } else if (prov === "deepseek") {
+        modelSelectBlock.style.display = "block";
+        customModelBlock.style.display = "none";
+        customUrlBlock.style.display = "block";
+        inpCustomUrl.value = config.custom_base_url || "";
+    } else {
+        modelSelectBlock.style.display = "block";
+        customModelBlock.style.display = "none";
+        customUrlBlock.style.display = "none";
+        inpCustomModel.value = "";
+        inpCustomUrl.value = "";
+    }
+
     renderChips();
     log("Settings loaded from backend.", "sys");
 }
 
 async function saveSettings() {
     config.provider = selProvider.value;
-    config.model    = selModel.value;
-    config.api_key  = inpApiKey.value.trim();
+    if (config.provider === "custom") {
+        config.model = inpCustomModel.value.trim();
+        config.custom_base_url = inpCustomUrl.value.trim();
+    } else if (config.provider === "deepseek") {
+        config.model = selModel.value;
+        config.custom_base_url = inpCustomUrl.value.trim();
+    } else {
+        config.model = selModel.value;
+        config.custom_base_url = "";
+    }
+    config.api_key = inpApiKey.value.trim();
 
     btnSave.textContent = "Saving…"; btnSave.disabled = true;
     try {
@@ -183,15 +247,25 @@ async function browseFolder() {
 // ── Connection ──
 async function testConn() {
     const provider = selProvider.value;
-    const model    = selModel.value;
-    const apiKey   = inpApiKey.value.trim();
+    let model = "";
+    let customBaseUrl = "";
+    if (provider === "custom") {
+        model = inpCustomModel.value.trim();
+        customBaseUrl = inpCustomUrl.value.trim();
+    } else if (provider === "deepseek") {
+        model = selModel.value;
+        customBaseUrl = inpCustomUrl.value.trim();
+    } else {
+        model = selModel.value;
+    }
+    const apiKey = inpApiKey.value.trim();
 
     setConn("yellow", "Testing…");
     log(`Testing connection to ${provider} / ${model}…`, "act");
     btnTest.textContent = "Testing…"; btnTest.disabled = true;
 
     try {
-        const msg = await TestConnection(provider, model, apiKey);
+        const msg = await TestConnection(provider, model, apiKey, customBaseUrl);
         setConn("green", provider.toUpperCase() + " Ready");
         log("Connection OK: " + msg, "ok");
     } catch (err) {

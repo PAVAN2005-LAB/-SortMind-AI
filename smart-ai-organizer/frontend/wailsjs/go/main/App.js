@@ -22,6 +22,6 @@ export function SelectFolder() {
   return window['go']['main']['App']['SelectFolder']();
 }
 
-export function TestConnection(arg1, arg2, arg3) {
-  return window['go']['main']['App']['TestConnection'](arg1, arg2, arg3);
+export function TestConnection(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['TestConnection'](arg1, arg2, arg3, arg4);
 }

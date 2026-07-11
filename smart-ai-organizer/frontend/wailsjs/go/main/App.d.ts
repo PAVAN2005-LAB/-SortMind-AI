@@ -12,4 +12,4 @@ export function ScanFolder(arg1:string):Promise<Array<main.FileInfo>>;
 
 export function SelectFolder():Promise<string>;
 
-export function TestConnection(arg1:string,arg2:string,arg3:string):Promise<string>;
+export function TestConnection(arg1:string,arg2:string,arg3:string,arg4:string):Promise<string>;

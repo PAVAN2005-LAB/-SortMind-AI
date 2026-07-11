@@ -50,11 +50,26 @@
                     <select id="selProvider">
                         <option value="gemini">Google Gemini</option>
                         <option value="openai">OpenAI</option>
+                        <option value="anthropic">Anthropic Claude</option>
+                        <option value="deepseek">DeepSeek</option>
                         <option value="ollama">Ollama (Local / Offline)</option>
+                        <option value="custom">Custom Endpoint</option>
                     </select>
 
-                    <label class="field-label" for="selModel">Model</label>
-                    <select id="selModel"></select>
+                    <div id="modelSelectBlock">
+                        <label class="field-label" for="selModel">Model</label>
+                        <select id="selModel"></select>
+                    </div>
+
+                    <div id="customModelBlock" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+                        <label class="field-label" for="inpCustomModel">Custom Model Name</label>
+                        <input type="text" id="inpCustomModel" placeholder="e.g. deepseek-chat, custom-model" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 2px; font-family: var(--font); font-size: 13px; background: var(--bg-main); color: var(--text-dark);">
+                    </div>
+
+                    <div id="customUrlBlock" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+                        <label class="field-label" for="inpCustomUrl">Custom API Base URL</label>
+                        <input type="text" id="inpCustomUrl" placeholder="e.g. https://api.deepseek.com/v1/chat/completions" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 2px; font-family: var(--font); font-size: 13px; background: var(--bg-main); color: var(--text-dark);">
+                    </div>
 
                     <div id="apiKeyBlock">
                         <label class="field-label" for="inpApiKey">API Key</label>

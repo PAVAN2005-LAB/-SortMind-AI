@@ -3,7 +3,11 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -18,10 +22,11 @@ import (
 
 // Config represents settings saved in config.json
 type Config struct {
-	Provider   string   `json:"provider"`
-	Model      string   `json:"model"`
-	APIKey     string   `json:"api_key"`
-	Categories []string `json:"categories"`
+	Provider      string   `json:"provider"`
+	Model         string   `json:"model"`
+	APIKey        string   `json:"api_key"`
+	Categories    []string `json:"categories"`
+	CustomBaseURL string   `json:"custom_base_url"` // New field
 }
 
 // FileInfo represents file metadata sent to frontend
@@ -51,14 +56,58 @@ func (a *App) startup(ctx context.Context) {
 
 const ConfigFile = "config.json"
 var DefaultCategories = []string{"Invoices", "Receipts", "Readings", "Code", "Images", "Others"}
+var secretKey = []byte("sortmindai-secret-encryptionkey!") // 32 bytes for AES-256
+
+// encrypt encrypts plaintext using AES-256-CFB
+func encrypt(text string) (string, error) {
+	if text == "" {
+		return "", nil
+	}
+	block, err := aes.NewCipher(secretKey)
+	if err != nil {
+		return "", err
+	}
+	ciphertext := make([]byte, aes.BlockSize+len(text))
+	iv := ciphertext[:aes.BlockSize]
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		return "", err
+	}
+	stream := cipher.NewCFBEncrypter(block, iv)
+	stream.XORKeyStream(ciphertext[aes.BlockSize:], []byte(text))
+	return hex.EncodeToString(ciphertext), nil
+}
+
+// decrypt decrypts ciphertext using AES-256-CFB
+func decrypt(cryptoText string) (string, error) {
+	if cryptoText == "" {
+		return "", nil
+	}
+	ciphertext, err := hex.DecodeString(cryptoText)
+	if err != nil {
+		return "", err
+	}
+	block, err := aes.NewCipher(secretKey)
+	if err != nil {
+		return "", err
+	}
+	if len(ciphertext) < aes.BlockSize {
+		return "", fmt.Errorf("ciphertext too short")
+	}
+	iv := ciphertext[:aes.BlockSize]
+	ciphertext = ciphertext[aes.BlockSize:]
+	stream := cipher.NewCFBDecrypter(block, iv)
+	stream.XORKeyStream(ciphertext, ciphertext)
+	return string(ciphertext), nil
+}
 
 // loadConfig reads the config file or returns defaults
 func (a *App) loadConfig() Config {
 	cfg := Config{
-		Provider:   "gemini",
-		Model:      "gemini-2.5-flash",
-		APIKey:     "",
-		Categories: DefaultCategories,
+		Provider:      "gemini",
+		Model:         "gemini-2.5-flash",
+		APIKey:        "",
+		Categories:    DefaultCategories,
+		CustomBaseURL: "",
 	}
 
 	if _, err := os.Stat(ConfigFile); err == nil {
@@ -66,25 +115,37 @@ func (a *App) loadConfig() Config {
 		if err == nil {
 			var loaded Config
 			if err := json.Unmarshal(data, &loaded); err == nil {
-				// Use loaded config if successful
 				if loaded.Provider != "" {
 					cfg.Provider = loaded.Provider
 				}
 				if loaded.Model != "" {
 					cfg.Model = loaded.Model
 				}
-				cfg.APIKey = loaded.APIKey
+				if loaded.APIKey != "" {
+					decrypted, err := decrypt(loaded.APIKey)
+					if err == nil {
+						cfg.APIKey = decrypted
+					} else {
+						// Fallback: key might be plaintext (migration)
+						cfg.APIKey = loaded.APIKey
+					}
+				}
 				if len(loaded.Categories) > 0 {
 					cfg.Categories = loaded.Categories
 				}
+				cfg.CustomBaseURL = loaded.CustomBaseURL
 			}
 		}
 	}
 	return cfg
 }
 
-// saveConfig writes configuration to disk
+// saveConfig writes configuration to disk (encrypting the API key)
 func (a *App) saveConfig(cfg Config) error {
+	encryptedKey, err := encrypt(cfg.APIKey)
+	if err == nil {
+		cfg.APIKey = encryptedKey
+	}
 	data, err := json.MarshalIndent(cfg, "", "  ")
 	if err != nil {
 		return err
@@ -313,11 +374,14 @@ func callGeminiAPI(apiKey, model, prompt string, base64Image string, mimeType st
 	return "", fmt.Errorf("no response text candidate received from Gemini")
 }
 
-func callOpenAIAPI(apiKey, model, prompt string, base64Image string, mimeType string) (string, error) {
+func callOpenAICompatibleAPI(customURL, apiKey, model, prompt string, base64Image string, mimeType string) (string, error) {
 	if model == "" {
 		model = "gpt-4o-mini"
 	}
 	url := "https://api.openai.com/v1/chat/completions"
+	if customURL != "" {
+		url = customURL
+	}
 
 	var content []interface{}
 	content = append(content, map[string]interface{}{
@@ -386,7 +450,67 @@ func callOpenAIAPI(apiKey, model, prompt string, base64Image string, mimeType st
 		return strings.TrimSpace(result.Choices[0].Message.Content), nil
 	}
 
-	return "", fmt.Errorf("no choice text received from OpenAI")
+	return "", fmt.Errorf("no choice text received from OpenAI-compatible endpoint")
+}
+
+func callClaudeAPI(apiKey, model, prompt string) (string, error) {
+	if model == "" {
+		model = "claude-3-5-sonnet-20241022"
+	}
+	url := "https://api.anthropic.com/v1/messages"
+
+	requestBody := map[string]interface{}{
+		"model":      model,
+		"max_tokens": 20,
+		"messages": []map[string]interface{}{
+			{
+				"role":    "user",
+				"content": prompt,
+			},
+		},
+	}
+
+	jsonBytes, err := json.Marshal(requestBody)
+	if err != nil {
+		return "", err
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBytes))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("x-api-key", apiKey)
+	req.Header.Set("anthropic-version", "2023-06-01")
+
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	bodyBytes, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("Claude API Error (Status %d): %s", resp.StatusCode, string(bodyBytes))
+	}
+
+	var result struct {
+		Content []struct {
+			Text string `json:"text"`
+			Type string `json:"type"`
+		} `json:"content"`
+	}
+
+	if err := json.Unmarshal(bodyBytes, &result); err != nil {
+		return "", err
+	}
+
+	if len(result.Content) > 0 {
+		return strings.TrimSpace(result.Content[0].Text), nil
+	}
+
+	return "", fmt.Errorf("no response text received from Claude")
 }
 
 func callOllamaAPI(model, prompt string, base64Image string) (string, error) {
@@ -437,7 +561,7 @@ func callOllamaAPI(model, prompt string, base64Image string) (string, error) {
 }
 
 // TestConnection tests the configured AI settings
-func (a *App) TestConnection(provider, model, apiKey string) (string, error) {
+func (a *App) TestConnection(provider, model, apiKey, customBaseURL string) (string, error) {
 	testPrompt := "Reply with only the word OK."
 	var result string
 	var err error
@@ -452,7 +576,26 @@ func (a *App) TestConnection(provider, model, apiKey string) (string, error) {
 		if apiKey == "" {
 			return "", fmt.Errorf("API Key is empty")
 		}
-		result, err = callOpenAIAPI(apiKey, model, testPrompt, "", "")
+		result, err = callOpenAICompatibleAPI("", apiKey, model, testPrompt, "", "")
+	case "deepseek":
+		if apiKey == "" {
+			return "", fmt.Errorf("API Key is empty")
+		}
+		url := "https://api.deepseek.com/v1/chat/completions"
+		if customBaseURL != "" {
+			url = customBaseURL
+		}
+		result, err = callOpenAICompatibleAPI(url, apiKey, model, testPrompt, "", "")
+	case "anthropic":
+		if apiKey == "" {
+			return "", fmt.Errorf("API Key is empty")
+		}
+		result, err = callClaudeAPI(apiKey, model, testPrompt)
+	case "custom":
+		if customBaseURL == "" {
+			return "", fmt.Errorf("Custom Base URL is required for custom provider")
+		}
+		result, err = callOpenAICompatibleAPI(customBaseURL, apiKey, model, testPrompt, "", "")
 	case "ollama":
 		result, err = callOllamaAPI(model, testPrompt, "")
 	default:
@@ -559,7 +702,21 @@ Response (ONLY the category name):`, categoriesList, fileInfoItem.Name, fileInfo
 	case "gemini":
 		category, apiErr = callGeminiAPI(cfg.APIKey, cfg.Model, prompt, base64Image, mimeType)
 	case "openai":
-		category, apiErr = callOpenAIAPI(cfg.APIKey, cfg.Model, prompt, base64Image, mimeType)
+		category, apiErr = callOpenAICompatibleAPI("", cfg.APIKey, cfg.Model, prompt, base64Image, mimeType)
+	case "deepseek":
+		url := "https://api.deepseek.com/v1/chat/completions"
+		if cfg.CustomBaseURL != "" {
+			url = cfg.CustomBaseURL
+		}
+		category, apiErr = callOpenAICompatibleAPI(url, cfg.APIKey, cfg.Model, prompt, base64Image, mimeType)
+	case "anthropic":
+		category, apiErr = callClaudeAPI(cfg.APIKey, cfg.Model, prompt)
+	case "custom":
+		url := cfg.CustomBaseURL
+		if url == "" {
+			url = "https://api.openai.com/v1/chat/completions"
+		}
+		category, apiErr = callOpenAICompatibleAPI(url, cfg.APIKey, cfg.Model, prompt, base64Image, mimeType)
 	case "ollama":
 		category, apiErr = callOllamaAPI(cfg.Model, prompt, base64Image)
 	default:

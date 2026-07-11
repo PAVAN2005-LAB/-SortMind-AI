@@ -281,5 +281,5 @@ $env:Path = "C:\Program Files\Go\bin;" + $env:Path
 ## 📄 License
 This project is licensed under the MIT License.
 
-Built with ❤️ by Pavan Kumar Yadav & Team.
+Built with  by Pavan Kumar Yadav & Team.
 If you find this project helpful, please give it a ⭐!

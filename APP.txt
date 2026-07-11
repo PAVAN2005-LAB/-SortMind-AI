@@ -1,0 +1,5 @@
+smart-ai-organizer> cd smart-ai-organizer
+>> $env:Path = "C:\Program Files\Go\bin;" + $env:Path
+
+ C:\Users\LENOVA\go\bin\wails.exe build
+>>

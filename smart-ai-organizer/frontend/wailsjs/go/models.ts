@@ -5,6 +5,7 @@ export namespace main {
 	    model: string;
 	    api_key: string;
 	    categories: string[];
+	    custom_base_url: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -16,6 +17,7 @@ export namespace main {
 	        this.model = source["model"];
 	        this.api_key = source["api_key"];
 	        this.categories = source["categories"];
+	        this.custom_base_url = source["custom_base_url"];
 	    }
 	}
 	export class FileInfo {
