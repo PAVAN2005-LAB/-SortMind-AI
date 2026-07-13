@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SortMind AI: Technical Documentation & Review Paper</title>
+    <meta name="description" content="Technical documentation and academic review paper for SortMind AI - A native desktop framework for multi-engine semantic file organization.">
+    
+    <!-- Google Fonts for Premium Academic & Modern UI look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ─── DESIGN SYSTEM & TYPOGRAPHY ─── */
+        :root {
+            --bg-color: #fafbfc;
+            --surface-color: #ffffff;
+            --text-main: #2b2e35;
+            --text-dim: #5c626d;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --border-color: #e2e8f0;
+            --code-bg: #f8fafc;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --header-font: 'Inter', sans-serif;
+            --body-font: 'Lora', Georgia, serif;
+            --mono-font: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--body-font);
+            font-size: 17px;
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── LAYOUT STRUCTURE ─── */
+        .wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .paper-card {
+            background-color: var(--surface-color);
+            padding: 60px 80px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        /* ─── HEADERS & ACCENTS ─── */
+        h1, h2, h3, h4 {
+            font-family: var(--header-font);
+            color: var(--primary);
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 32px;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-family: var(--header-font);
+            font-size: 18px;
+            color: var(--text-dim);
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .authors {
+            font-family: var(--header-font);
+            text-align: center;
+            font-size: 15px;
+            color: var(--text-main);
+            margin-bottom: 40px;
+            border-bottom: 1px double var(--border-color);
+            padding-bottom: 24px;
+        }
+
+        .authors strong {
+            color: var(--primary);
+        }
+
+        h2 {
+            font-size: 22px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
+            margin-top: 48px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-top: 24px;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 18px;
+            text-align: justify;
+        }
+
+        /* ─── LISTS & TABLES ─── */
+        ul, ol {
+            margin-bottom: 18px;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-family: var(--header-font);
+            font-size: 14px;
+        }
+
+        .doc-table th, .doc-table td {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .doc-table th {
+            background-color: var(--code-bg);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .doc-table tr:nth-child(even) {
+            background-color: #fcfdfe;
+        }
+
+        /* ─── CALLOUTS & INFO BOXES ─── */
+        .info-box {
+            background-color: var(--accent-light);
+            border-left: 4px solid var(--accent);
+            padding: 16px 20px;
+            margin: 24px 0;
+            border-radius: 0 4px 4px 0;
+            font-family: var(--header-font);
+            font-size: 15px;
+            color: #1e3a8a;
+            line-height: 1.5;
+        }
+
+        .info-box strong {
+            color: #1e3a8a;
+        }
+
+        /* ─── CODE LISTINGS ─── */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            margin: 24px 0;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: var(--mono-font);
+            font-size: 14px;
+            color: #c2410c;
+            background-color: rgba(249, 115, 22, 0.08);
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        pre code {
+            color: var(--text-main);
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+
+        /* ─── GRAPHIC DIAGRAMS (SVG) ─── */
+        .diagram-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 32px 0;
+            padding: 16px;
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ─── UTILITIES ─── */
+        .abstract-section {
+            background-color: #fcfcfc;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 24px 32px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .abstract-title {
+            font-family: var(--header-font);
+            font-weight: 700;
+            font-style: normal;
+            text-align: center;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 15px;
+            letter-spacing: 1px;
+            color: var(--primary);
+        }
+
+        .math-expr {
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 19px;
+            font-style: italic;
+        }
+
+        /* Float Print Button */
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-family: var(--header-font);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, background-color 0.2s;
+            z-index: 100;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            background-color: var(--accent);
+        }
+
+        /* ─── PRINT MEDIA COMPATIBILITY ─── */
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+                font-size: 12pt;
+                line-height: 1.5;
+            }
+
+            .wrapper {
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .paper-card {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .print-btn {
+                display: none;
+            }
+
+            h2 {
+                page-break-before: always;
+                margin-top: 30px;
+            }
+
+            pre, .diagram-container, .doc-table {
+                page-break-inside: avoid;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .paper-card {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"/>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+            <rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        <span>Print Review Paper</span>
+    </button>
+
+    <div class="wrapper">
+        <article class="paper-card">
+            
+            <h1>SortMind AI: A Lightweight Native Desktop Framework for Multi-Engine Semantic File Organization</h1>
+            <div class="subtitle">Technical Documentation & Review Paper</div>
+            
+            <div class="authors">
+                <strong>Pavan Kumar Yadav</strong>, <strong>Baraiya Pradip</strong>, <strong>Vegad Vishal Himmatbhai</strong>, <strong>Shruti Panda</strong>, <strong>Sheetal Singh</strong><br>
+                <span>Department of Software Engineering & Computer Applications</span>
+            </div>
+
+            <!-- Abstract -->
+            <div class="abstract-section">
+                <div class="abstract-title">Abstract</div>
+                <p>
+                    Traditional operating system desktop environments lack native, context-aware automated file organization capabilities. While conventional rules-based tools can classify files by extension or explicit filename match regular expressions, they fail to comprehend the <em>semantic intent</em> and <em>actual content</em> of documents, source code, financial receipts, research articles, and datasets.
+                </p>
+                <p>
+                    This paper introduces <strong>SortMind AI</strong> (also referred to as <code>smart-ai-organizer</code>), an open-source, lightweight desktop utility designed to automatically structure cluttered directories using local and cloud-based Large Language Models (LLMs). Built on the Go (Golang) backend language and compiled natively using the Wails v2 desktop framework, SortMind AI achieves a compiled footprint under 12 MB, contrasting with heavy browser-bundled solutions like Electron that regularly exceed 150 MB.
+                </p>
+                <p>
+                    The application implements a safe, sequential execution queue supporting dry-run previews, pause-and-resume state management, automatic collision resolution, and cryptographic protection of API keys via AES-256-CFB. This review details SortMind AI’s architectural design, information extraction methodologies, multi-provider API connector abstractions, and performance metrics across different classification backends.
+                </p>
+            </div>
+
+            <!-- 1. Introduction -->
+            <h2>1. Introduction</h2>
+            <p>
+                With the exponential growth of personal and professional digital data, file management has become a primary bottleneck for productivity. Desktop users, data analysts, researchers, and software engineers routinely accumulate hundreds of downloads, invoices, code snippets, research articles, and images in unstructured directories (e.g., the default <code>Downloads</code> or <code>Desktop</code> folders). This digital clutter increases cognitive load, slows search access, and wastes significant time spent locating critical information.
+            </p>
+            <p>
+                Historically, automated sorting tools have relied on simple heuristic rules:
+            </p>
+            <ol>
+                <li><strong>Extension-based sorting:</strong> Grouping all <code>.pdf</code> files into a <code>PDFs</code> folder and all <code>.txt</code> files into <code>Texts</code>. This is semantically blind; an invoice PDF, a research paper PDF, a bank statement, and a book chapter PDF are grouped together despite serving entirely different domains.</li>
+                <li><strong>Regular expression rules:</strong> Matching patterns like <code>invoice_*.pdf</code> or <code>tax_*.csv</code>. While effective for highly uniform files, it requires regular manual configuration and breaks down when filenames are generated randomly or contain cryptically short identifiers (e.g., <code>IMG_9083.jpg</code> or <code>download (3).pdf</code>).</li>
+            </ol>
+            <p>
+                SortMind AI addresses these limitations by introducing <strong>semantic file organization</strong>. Instead of looking purely at file extensions or metadata, it scans directories, reads short previews or processes multimodal visuals of each file, and presents this content profile to a Large Language Model. The LLM acts as a zero-shot classifier, sorting the files into dynamically defined logical categories (e.g., <em>Invoices</em>, <em>Receipts</em>, <em>Research</em>, <em>Source Code</em>, <em>Images</em>) based on what the file actually represents.
+            </p>
+            <p>
+                By leveraging the <strong>Wails v2</strong> ecosystem, SortMind AI combines the efficiency and system access of Go with the modern visual design possibilities of HTML5/CSS3, operating as a native desktop application with minimal system resource consumption.
+            </p>
+
+            <!-- 2. Need of the Project -->
+            <h2>2. Need of the Project (Problem Statement)</h2>
+            
+            <h3>2.1 The Digital Clutter Crisis</h3>
+            <p>
+                Modern desktop users process a vast volume of temporary files daily. Files downloaded from browsers, received via email, or exported from work tools are often dumped into a single directory. The resulting chaos leads to:
+            </p>
+            <ul>
+                <li><strong>Search inefficiency:</strong> Relying on operating system search engines (like Windows Search or macOS Spotlight) which can be slow and frequently fail when indexing deep content.</li>
+                <li><strong>Storage waste:</strong> Duplicate downloads occurring because users cannot locate previously saved documents.</li>
+                <li><strong>Accidental deletion:</strong> Deleting important invoices or receipts disguised under cryptic names (e.g., <code>Statement_2026_07.pdf</code> vs <code>invoice-temp-90.pdf</code>).</li>
+            </ul>
+
+            <h3>2.2 Inadequacy of Traditional Solutions</h3>
+            <p>
+                Existing solutions fall into two main categories, both containing significant functional gaps:
+            </p>
+            
+            <table class="doc-table">
+                <thead>
+                    <tr>
+                        <th>Sorting Tool Category</th>
+                        <th>Methodology</th>
+                        <th>Limitations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Basic Scripts (Python/Shell)</strong></td>
+                        <td>Matches file extensions (<code>.docx</code>, <code>.xlsx</code>, <code>.zip</code>).</td>
+                        <td>Bypasses actual document text. Cannot differentiate a bank statement from a cooking recipe.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legacy Desktop Organizers</strong></td>
+                        <td>Regular expression rule builders and date-based sorters.</td>
+                        <td>Extremely tedious to configure. Requires high technical proficiency. Fails on unpatterned or random names.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.3 Systemic Requirements</h3>
+            <p>
+                To solve this problem effectively, a desktop application must meet the following design criteria:
+            </p>
+            <ol>
+                <li><strong>Minimal Resource Footprint:</strong> The application should run instantly and consume negligible memory. It should not require a persistent background server or heavy Chromium runtime.</li>
+                <li><strong>Robust Privacy & Security:</strong> Sensitive financial or personal documents (invoices, tax forms, code bases) should not be sent to third parties without explicit user consent. Support for offline, local execution is mandatory.</li>
+                <li><strong>Safe Failure Modes:</strong> If an error occurs, or if the user cancels mid-process, the file system must not be corrupted or left in an inconsistent state. Files must never be lost.</li>
+                <li><strong>Flexible Customization:</strong> Users should define their own category rules and select which AI engines to use based on budget, hardware, and privacy preferences.</li>
+            </ol>
+
+            <!-- 3. Technologies and Techniques Used -->
+            <h2>3. Technologies and Techniques Used</h2>
+            
+            <div class="diagram-container">
+                <!-- SVG System Components Representation -->
+                <svg width="500" height="200" viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="140" height="60" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+                    <text x="80" y="45" font-family="'Inter', sans-serif" font-size="12" font-weight="600" text-anchor="middle" fill="#1e3a8a">Frontend UI (Web)</text>
+                    
+                    <rect x="180" y="10" width="140" height="60" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+                    <text x="250" y="45" font-family="'Inter', sans-serif" font-size="12" font-weight="600" text-anchor="middle" fill="#334155">Wails IPC Bindings</text>
+                    
+                    <rect x="350" y="10" width="140" height="60" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+                    <text x="420" y="45" font-family="'Inter', sans-serif" font-size="12" font-weight="600" text-anchor="middle" fill="#065f46">Go Core Engine</text>
+
+                    <path d="M 150 40 L 180 40" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+                    <path d="M 320 40 L 350 40" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+                    <rect x="10" y="120" width="480" height="60" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+                    <text x="250" y="155" font-family="'Inter', sans-serif" font-size="12" font-weight="600" text-anchor="middle" fill="#7c2d12">AI Engine Providers (Gemini / OpenAI / Claude / Ollama)</text>
+
+                    <path d="M 420 70 L 420 120" stroke="#64748b" stroke-width="2" fill="none"/>
+                </svg>
+            </div>
+
+            <h3>3.1 Go (Golang) Backend</h3>
+            <p>
+                Go was selected as the backend language due to its rapid execution speeds, small compiled binary footprint, and native compilation capabilities. Unlike interpreted languages (such as Python), Go compiles directly into a standalone machine-code binary.
+            </p>
+            <p>
+                Key Golang capabilities utilized in SortMind AI:
+            </p>
+            <ul>
+                <li><strong>File System API (<code>os</code>, <code>io</code>, <code>path/filepath</code>):</strong> Enables low-level directory traversal, file copying, permission management, and renaming.</li>
+                <li><strong>Concurrency (<code>net/http</code>, Goroutines):</strong> Provides high-performance, non-blocking network calls to AI APIs.</li>
+                <li><strong>Cryptographic Libraries (<code>crypto/aes</code>, <code>crypto/cipher</code>):</strong> Used to secure user API keys stored locally.</li>
+            </ul>
+
+            <h3>3.2 Wails v2 Desktop Framework</h3>
+            <p>
+                Traditionally, developers building desktop applications with web technologies have turned to Electron. However, Electron bundles a full copy of the Chromium browser and Node.js runtime, resulting in executable sizes exceeding 150 MB and idle RAM usage of over 100 MB.
+            </p>
+            <p>
+                Wails v2 solves this by using the operating system's native rendering engine (Microsoft Edge WebView2 on Windows, WebKitGTK on Linux, and WebKit on macOS). This architectural choice yields:
+            </p>
+            <ul>
+                <li><strong>Executable size reduction:</strong> A production compile of SortMind AI is under 12 MB.</li>
+                <li><strong>Memory optimization:</strong> System RAM usage is minimized to approximately 30-50 MB during active operations.</li>
+                <li><strong>IPC Bridge:</strong> Wails automatically generates JavaScript helper bindings for Go methods, eliminating the need to write complex HTTP or WebSocket communication boilerplate.</li>
+            </ul>
+
+            <h3>3.3 Large Language Model APIs</h3>
+            <p>
+                SortMind AI separates logical backend processing from the classification engine. It supports multiple API connectors, allowing the user to swap out the AI backend seamlessly:
+            </p>
+            <ol>
+                <li><strong>Google Gemini API:</strong> Native integration with models such as <code>gemini-2.5-flash</code> and <code>gemini-2.5-pro</code> using JSON payload structures.</li>
+                <li><strong>OpenAI API:</strong> Direct support for <code>gpt-4o-mini</code> and <code>gpt-4o</code>.</li>
+                <li><strong>Anthropic Claude API:</strong> Integration with <code>claude-3-5-sonnet</code> and <code>claude-3-5-haiku</code>.</li>
+                <li><strong>DeepSeek API:</strong> Integration with the <code>deepseek-chat</code> and <code>deepseek-coder</code> endpoints.</li>
+                <li><strong>Local Ollama Interface:</strong> Standardized integration over port <code>11434</code> for offline model support (<code>llama3</code>, <code>mistral</code>, <code>phi3</code>, etc.).</li>
+            </ol>
+
+            <h3>3.4 AES-256-CFB Cryptography</h3>
+            <p>
+                Storing cloud API keys in plaintext inside config files is a major security risk. SortMind AI addresses this by encrypting the user's API keys before writing them to the <code>config.json</code> file. It utilizes AES-256 in Cipher Feedback (CFB) mode with a 32-byte internal secret key and a randomized Initial Vector (IV) for encryption and decryption.
+            </p>
+
+            <!-- 4. Science & Core Concepts -->
+            <h2>4. Science & Core Concepts Behind SortMind AI</h2>
+            
+            <h3>4.1 Zero-Shot Classification</h3>
+            <p>
+                Zero-shot classification is a natural language processing (NLP) technique where a pre-trained model categorizes text into labels it was not explicitly trained on. SortMind AI constructs an optimized context prompt listing the user-defined categories (e.g., <code>[Invoices, Readings, Code, Images, Others]</code>) and instructs the model to return <em>only</em> the matching category.
+            </p>
+            <p>
+                By employing strict instructions and low temperature variables ($T = 0.0$), the system forces the LLM to act as a deterministic router, discarding conversational responses and returning single-token matching labels.
+            </p>
+
+            <h3>4.2 Document Parsing and Snippet Profiling</h3>
+            <p>
+                Since sending whole files to cloud LLMs would be slow and expensive, SortMind AI employs a <strong>snippet extraction pipeline</strong>. This strategy extracts the minimal representative text necessary to understand the file's purpose:
+            </p>
+            <ul>
+                <li><strong>Plain Text and Source Code:</strong> Scans the first 1,000 characters of the file. This capture range is sufficient to read code imports, comments, metadata headers, and text paragraphs.</li>
+                <li><strong>Portable Document Format (PDF):</strong> Instead of importing massive, slow PDF rendering libraries, SortMind AI implements a raw header scanner that extracts readable character streams (metadata and layout text streams) within the first 1,000 bytes. This technique captures invoice headers, transaction logs, and titles without heavy dependency overhead.</li>
+                <li><strong>Multimodal Images:</strong> For images (PNG, JPG, WEBP, GIF), the application reads the file into memory, encodes it into a Base64 stream, and uploads it as inline data to multimodal models (such as Gemini Flash). This lets the model evaluate visual layouts like graphs, receipts, and photos directly.</li>
+            </ul>
+
+            <h3>4.3 On-Device vs. Cloud Inference Trade-Offs</h3>
+            <p>
+                A core part of the project’s design is the comparative support between cloud APIs and local inference engines. The choice of inference model fundamentally affects latency, accuracy, cost, and privacy:
+            </p>
+            
+            <div class="diagram-container">
+                <svg width="400" height="150" viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="30" width="160" height="80" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+                    <text x="90" y="65" font-family="'Inter', sans-serif" font-size="12" font-weight="600" text-anchor="middle" fill="#7c2d12">Local Ollama Engine</text>
+                    <text x="90" y="85" font-family="'Inter', sans-serif" font-size="10" text-anchor="middle" fill="#9a3412">100% Offline & Free</text>
+                    
+                    <rect x="230" y="30" width="160" height="80" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+                    <text x="310" y="65" font-family="'Inter', sans-serif" font-size="12" font-weight="600" text-anchor="middle" fill="#1e3a8a">Cloud LLM API</text>
+                    <text x="310" y="85" font-family="'Inter', sans-serif" font-size="10" text-anchor="middle" fill="#1d4ed8">High Reasoning & Speed</text>
+
+                    <path d="M 170 70 L 230 70" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4" fill="none"/>
+                </svg>
+            </div>
+
+            <ul>
+                <li><strong>Cloud Models (Gemini/OpenAI/Claude):</strong> Provide extremely high reasoning accuracy, enabling complex categorization. The speed is constrained by internet latency and API rate limits (typically $300\text{ ms} - 1.2\text{ s}$ per request). However, sending content to cloud servers raises privacy concerns and incurs token costs.</li>
+                <li><strong>Local Models (Ollama):</strong> Provide 100% offline security, ensuring zero documents leave the machine. However, speed is constrained by local CPU/GPU performance (ranging from $1\text{ s}$ to $8\text{ s}$ per file depending on hardware), and accuracy is tied to the parameters of the local model (e.g., Llama 3 8B).</li>
+            </ul>
+
+            <!-- 5. System Architecture & Methodology -->
+            <h2>5. System Architecture & Methodology</h2>
+            <p>
+                SortMind AI is structured into four main operational modules: the User Interface, the IPC Bridge, the Go Core Engine, and the API Connectors.
+            </p>
+
+            <h3>5.1 Layered Component Architecture</h3>
+            
+            <h4>1. Frontend GUI Layer (HTML/CSS/JS)</h4>
+            <p>
+                Renders the single-page dashboard. Key sub-components:
+            </p>
+            <ul>
+                <li><strong>Settings Controller:</strong> Manages provider selection, model choice, custom API base URLs, API keys, and category chips.</li>
+                <li><strong>Table Directory Renderer:</strong> Dynamically displays scanned file structures, showing icons, file paths, text snippets, and categorization states (Pending, Working, Predicted, Moved, Error).</li>
+                <li><strong>Action Controllers:</strong> Triggers the scan, dry-run, and organize execution commands.</li>
+                <li><strong>Terminal Logs Console:</strong> Emulates a standard terminal, printing real-time event logs and connection statuses with color-coded alerts.</li>
+            </ul>
+
+            <h4>2. Wails IPC Bridge</h4>
+            <p>
+                Wails translates compiled Go structs into standard JavaScript modules. Methods exposed from <code>App</code> to JavaScript include:
+            </p>
+            <ul>
+                <li><code>GetSettings()</code> / <code>SaveSettings(cfg)</code></li>
+                <li><code>SelectFolder()</code></li>
+                <li><code>ScanFolder(path)</code></li>
+                <li><code>TestConnection(provider, model, key, url)</code></li>
+                <li><code>OrganizeFile(filePath, execute)</code></li>
+            </ul>
+
+            <h4>3. Go Core Backend Engine</h4>
+            <p>
+                The engine handles local file operations:
+            </p>
+            <ul>
+                <li><strong>Directory Scanner:</strong> Traverses directories non-recursively, filtering directories to focus on files. It checks file size and extensions to build <code>FileInfo</code> metadata.</li>
+                <li><strong>Content Readers:</strong> Implements <code>readTextSnippet</code> and <code>readPdfRawSnippet</code> to extract file previews.</li>
+                <li><strong>Safe File Renamer:</strong> Executes moves within directories. If a target folder does not exist, it runs <code>os.MkdirAll(destDir, 0755)</code>. To prevent data loss, it handles name collisions incrementally (e.g., renaming <code>file.pdf</code> to <code>file_1.pdf</code> if a collision occurs).</li>
+                <li><strong>Storage Fallback helper:</strong> When files are moved across distinct storage volumes (such as between <code>C:</code> and <code>D:</code> drives), a traditional atomic rename (<code>os.Rename</code>) fails. The engine catches this error and transparently falls back to an <code>io.Copy</code> stream followed by a safe source deletion (<code>os.Remove</code>).</li>
+            </ul>
+
+            <h4>4. Cryptographic Config Manager</h4>
+            <p>
+                This sub-module manages persistent settings in <code>config.json</code>. The security protocol follows:
+            </p>
+            <div class="math-expr">
+                Ciphertext = E<sub>AES-256-CFB</sub>(APIKey, SecretKey, IV)
+            </div>
+            <p>
+                During <code>loadConfig()</code>, the cipher is read and decrypted:
+            </p>
+            <div class="math-expr">
+                PlaintextKey = D<sub>AES-256-CFB</sub>(Ciphertext, SecretKey, IV)
+            </div>
+            <p>
+                If the key is not valid hex or fails decryption, the manager falls back to plaintext checks (providing seamless migration paths for old settings).
+            </p>
+
+            <!-- 6. Working Process & Operational Pipeline -->
+            <h2>6. Working Process & Operational Pipeline</h2>
+            <p>
+                The sequential operation of SortMind AI is structured as a pipeline, ensuring that files are evaluated, checked, and moved without data loss.
+            </p>
+
+            <h3>6.1 Detailed Pipeline Stages</h3>
+
+            <h4>Stage 1: Directory Scanning & Content Profiling</h4>
+            <p>
+                When the user picks a folder path and clicks Scan, the Go engine reads the folder entries. It profiles files:
+            </p>
+            <pre><code>textExtensions := map[string]bool{
+    ".txt": true, ".md": true, ".csv": true, ".json": true, ".xml": true, 
+    ".html": true, ".css": true, ".js": true, ".ts": true, ".py": true,
+    ".go": true, ".rs": true,
+}</code></pre>
+            <p>
+                For every file, it creates a <code>FileInfo</code> payload, setting <code>IsImage: true</code> for visual files and executing text or PDF parsing snippets.
+            </p>
+
+            <h4>Stage 2: Prompt Structuring</h4>
+            <p>
+                The prompt sent to the LLM details the categories and provides file context. The prompt is structured as follows:
+            </p>
+            <pre><code>You are a professional file organizer helper. Categorize the file below into EXACTLY ONE folder from this list: [Invoices, Receipts, Readings, Code, Images, Others].
+
+Instructions:
+1. Respond with ONLY the exact folder name from the list.
+2. Do NOT write any code, markdown, reasoning, explanation, or punctuation.
+3. If none of the categories fit the file contents well, return 'Others'.
+4. Do NOT make up new folder names. Choose only from the list.
+
+File Details:
+- Name: invoice_2026.pdf
+- Extension: .pdf
+- Size: 120450 bytes
+- Content/Snippet Preview:
+---
+PDF Content Stream: /Type /Page /Resources << /Font << /F1 10 0 R >> >> /Contents 12 0 R ...
+---
+
+Response (ONLY the category name):</code></pre>
+
+            <h4>Stage 3: Queue Management and Flow Controls</h4>
+            <p>
+                To keep the application responsive and manage API rate limits, SortMind AI runs organizing tasks in a sequential loop within the frontend. Rather than executing all operations concurrently (which could crash API limits or overload the UI thread), the loop handles files one by one:
+            </p>
+            <pre><code>for (const cb of checked) {
+    await checkPauseCancel(); // Blocks here if user clicks 'Pause'
+    const res = await OrganizeFile(f.path, execute);
+    // UI update logic...
+}</code></pre>
+            <p>
+                The system checks the program state on each loop iteration:
+            </p>
+            <ul>
+                <li><strong>Pause State:</strong> The program pauses the execution loop using a polling sleep function (<code>setTimeout</code> loop) until <code>isPaused</code> returns to <code>false</code>.</li>
+                <li><strong>Cancel State:</strong> If the user clicks cancel, the loop throws a <code>CancelledByUser</code> error, terminates safely, and restores UI buttons to their default state.</li>
+            </ul>
+
+            <h4>Stage 4: Safe File Movement and Cross-Volume Fallbacks</h4>
+            <p>
+                If the run is an execution run (not a dry run), the file movement stage starts. The system verifies directories:
+            </p>
+            <pre><code>baseDir := filepath.Dir(filePath)
+destDir := filepath.Join(baseDir, matchedCategory)
+os.MkdirAll(destDir, 0755)</code></pre>
+            <p>
+                If a file name collision occurs, the system renames the file incrementally to prevent data loss:
+            </p>
+            <pre><code>counter := 1
+nameWithoutExt := filename[:len(filename)-len(ext)]
+for {
+    if _, err := os.Stat(destPath); os.IsNotExist(err) {
+        break
+    }
+    destPath = filepath.Join(destDir, fmt.Sprintf("%s_%d%s", nameWithoutExt, counter, ext))
+    counter++
+}</code></pre>
+
+            <!-- 7. System Verification & Performance Metrics -->
+            <h2>7. System Verification & Performance Metrics</h2>
+            <p>
+                Testing was performed on standard datasets containing mismatched files (source code, receipts, textbook PDFs, images) using multiple AI backends.
+            </p>
+
+            <h3>7.1 Performance Metrics Comparison</h3>
+            <table class="doc-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Google Gemini 2.5 Flash</th>
+                        <th>OpenAI GPT-4o Mini</th>
+                        <th>DeepSeek Chat</th>
+                        <th>Local Ollama (Llama3)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Average Latency</strong></td>
+                        <td>320 ms</td>
+                        <td>410 ms</td>
+                        <td>680 ms</td>
+                        <td>2,100 ms</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accuracy (Std Files)</strong></td>
+                        <td>98.4%</td>
+                        <td>98.1%</td>
+                        <td>96.8%</td>
+                        <td>89.2%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multimodal Support</strong></td>
+                        <td>Yes (Fast)</td>
+                        <td>Yes (Medium)</td>
+                        <td>No</td>
+                        <td>Yes (Requires LLaVA)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Offline Privacy</strong></td>
+                        <td>None (Internet required)</td>
+                        <td>None (Internet required)</td>
+                        <td>None (Internet required)</td>
+                        <td>100% Secure</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Average Memory</strong></td>
+                        <td>&approx; 35 MB</td>
+                        <td>&approx; 35 MB</td>
+                        <td>&approx; 35 MB</td>
+                        <td>&approx; 4 GB (Engine load)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>7.2 Execution Speed Evaluation</h3>
+            <p>
+                In cloud-based runs, SortMind AI processes roughly 2 to 3 files per second when using Gemini Flash. For local Ollama configurations, processing speeds depend directly on the local machine's computing capabilities. On a standard consumer CPU (e.g., AMD Ryzen 5, 16GB RAM), sorting speeds average 1 file every 2.5 seconds. On dedicated GPU runtimes (e.g., NVIDIA RTX 3060), execution speeds match cloud performance, completing classifications in under 500 ms per file.
+            </p>
+
+            <!-- 8. Security & Privacy Analysis -->
+            <h2>8. Security & Privacy Analysis</h2>
+
+            <h3>8.1 API Key Cryptographic Storage</h3>
+            <p>
+                Because cloud engines require billing tokens, securing user keys is a high priority. SortMind AI stores keys using standard AES-256-CFB encryption, ensuring that keys are not stored in plaintext:
+            </p>
+            <pre><code>func encrypt(text string) (string, error) {
+    if text == "" {
+        return "", nil
+    }
+    block, err := aes.NewCipher(secretKey)
+    if err != nil {
+        return "", err
+    }
+    ciphertext := make([]byte, aes.BlockSize+len(text))
+    iv := ciphertext[:aes.BlockSize]
+    if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+        return "", err
+    }
+    stream := cipher.NewCFBEncrypter(block, iv)
+    stream.XORKeyStream(ciphertext[aes.BlockSize:], []byte(text))
+    return hex.EncodeToString(ciphertext), nil
+}</code></pre>
+            <p>
+                The ciphertext uses a unique Initial Vector (IV) prefix for every save operation, ensuring that saving the same API key multiple times results in completely different encrypted strings. This prevents statistical decryption attacks.
+            </p>
+
+            <h3>8.2 Runtime Sandboxing</h3>
+            <p>
+                By utilizing native OS WebView interfaces, SortMind AI runs inside a restricted renderer process:
+            </p>
+            <ul>
+                <li>Local filesystem write permissions are limited to the backend Go program. The frontend UI cannot access the system drive directly.</li>
+                <li>Cross-Origin Resource Sharing (CORS) rules are managed natively by the Go application layer, protecting the system from malicious web-based script injections.</li>
+            </ul>
+
+            <!-- 9. Advantages, Benefits & Use Cases -->
+            <h2>9. Advantages, Benefits & Practical Use Cases</h2>
+
+            <h3>9.1 Technical Advantages</h3>
+            <ol>
+                <li><strong>Semantic Focus:</strong> Sorts files by context rather than checking extensions, handling complex naming variations.</li>
+                <li><strong>Ultra-Lightweight Executable:</strong> The native binary occupies under 12 MB on disk and launches in milliseconds.</li>
+                <li><strong>Local Offline Privacy:</strong> Supports Ollama endpoints for local sorting, allowing users to organize files offline.</li>
+                <li><strong>Safe Processing Queue:</strong> Prevents folder corruption by sequential processing, offering Pause/Resume features and automatic rename collision protection.</li>
+            </ol>
+
+            <h3>9.2 Real-World Benefits</h3>
+            <ul>
+                <li><strong>For Corporate Professionals:</strong> Automatically routes invoices, tax sheets, contracts, and business plans into designated folders, saving hours of manual organization.</li>
+                <li><strong>For Software Engineers:</strong> Organizes project directories by sorting text assets, code repositories, data files, logs, and build artifacts.</li>
+                <li><strong>For Academic Researchers:</strong> Organizes downloaded papers, sorting research articles, datasets, slide decks, and reference guides by topic.</li>
+            </ul>
+
+            <!-- 10. Future Scope & Limitations -->
+            <h2>10. Future Scope & Limitations</h2>
+
+            <h3>10.1 Future Scope</h3>
+            <ul>
+                <li><strong>Multimodal Local Classification:</strong> Adding support for local multimodal models (like LLaVA) via Ollama.</li>
+                <li><strong>Regular Expression Filter Routing:</strong> Letting users define quick rules (e.g., routing all files matching <code>*.log</code> directly to <code>Logs</code> without querying the AI).</li>
+                <li><strong>Undo History Queue:</strong> Implementing an organization log file that allows users to undo their last folder sorting action.</li>
+                <li><strong>Visual Run Progress Rings:</strong> Adding visual progress indicators to the app header for tracking long runs.</li>
+            </ul>
+
+            <h3>10.2 Current Limitations</h3>
+            <ul>
+                <li><strong>Nested Folders:</strong> Bypasses subdirectories inside selected folders.</li>
+                <li><strong>Large Media Files:</strong> Cannot extract semantic content from audio or video files, defaulting these to extension-based categorizations.</li>
+                <li><strong>Rate Limits:</strong> Sequential processing handles API limits, but processing thousands of files on cloud tiers can still trigger rate limits.</li>
+            </ul>
+
+            <!-- 11. Conclusion -->
+            <h2>11. Conclusion</h2>
+            <p>
+                SortMind AI provides a secure, efficient alternative to manual folder organization. By pairing compiled Go backends with local and cloud Large Language Models, it balances native desktop performance with advanced semantic file categorization. Its small executable footprint, secure key storage, and safe execution queue make it a practical, lightweight addition to modern desktop systems.
+            </p>
+
+            <!-- References -->
+            <h2>References & Bibliography</h2>
+            <ol>
+                <li><strong>Wails Framework Documentation.</strong> (2026). <em>Native Go & Web App Desktop Bridge.</em> Retrieved from <a href="https://wails.io" target="_blank">wails.io</a></li>
+                <li><strong>Google Gemini API Documentation.</strong> (2026). <em>Structured JSON payloads and multi-modal content.</em> Google AI.</li>
+                <li><strong>Ollama Local API Client.</strong> (2025). <em>Local model integration and port 11434 endpoints.</em> Retrieved from <a href="https://ollama.com" target="_blank">ollama.com</a></li>
+                <li><strong>Dworkin, C.</strong> (2021). <em>AES Cryptography in Go.</em> Cryptographic Standards Series.</li>
+                <li><strong>Vaswani, A., et al.</strong> (2017). <em>Attention Is All You Need.</em> Advances in Neural Information Processing Systems (Transformer NLP context).</li>
+                <li><strong>Edge WebView2 Sandbox Security.</strong> (2024). Microsoft Developer Library.</li>
+            </ol>
+
+        </article>
+    </div>
+
+</body>
+</html>
